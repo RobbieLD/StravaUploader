@@ -1,0 +1,17 @@
+{
+  "Auth": {
+    "Code": "123",
+    "CallbackUrl": "http://localhost:8080/auth/",
+    "Scope": [
+      "activity",
+      "read_all",
+      "activity",
+      "write"
+    ],
+    "ResponseType": "code",
+    "ClientId": "123"
+  },
+  "Device": {
+    "Name": "GARMIN"
+  }
+}
