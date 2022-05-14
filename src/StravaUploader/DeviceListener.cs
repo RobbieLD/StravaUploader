@@ -5,7 +5,7 @@ using System.Runtime.Versioning;
 namespace StravaUploader
 {
     [SupportedOSPlatform("windows")]
-    internal class DeviceListener
+    public class DeviceListener
     {
         public event EventHandler<DeviceFoundArgs>? DeviceFound;
 
@@ -13,7 +13,7 @@ namespace StravaUploader
         private readonly ManagementEventWatcher _watcher;
         private readonly Config _config;
 
-        internal DeviceListener(IOptions<Config> options)
+        public DeviceListener(IOptions<Config> options)
         {
             _config = options.Value;
             _watcher = new();
@@ -32,14 +32,10 @@ namespace StravaUploader
             {
                 if (drive.Name.StartsWith(e.NewEvent.Properties["DriveName"].Value.ToString() ?? string.Empty) && drive.VolumeLabel == _config.Device.Name)
                 {
-                    OnDeviceFound(new DeviceFoundArgs(drive.RootDirectory.FullName));
+                    DeviceFound?.Invoke(this, new DeviceFoundArgs(drive.RootDirectory.FullName));
+                    break;
                 }
             }
-        }
-
-        protected virtual void OnDeviceFound(DeviceFoundArgs e)
-        {
-            DeviceFound?.Invoke(this, e);
         }
     }
 }

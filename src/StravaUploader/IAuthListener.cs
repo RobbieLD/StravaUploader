@@ -1,7 +1,7 @@
 ﻿namespace StravaUploader
 {
-    internal interface IAuthListener
+    public interface IAuthListener
     {
-        internal Task<string> GetAuthCode();
+        Task<string> GetAuthCodeAsync();
     }
 }

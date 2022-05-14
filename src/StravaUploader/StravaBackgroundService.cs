@@ -1,35 +1,53 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace StravaUploader
 {
-    internal class StravaBackgroundService : BackgroundService
+    public class StravaBackgroundService : BackgroundService
     {
         private readonly DeviceListener _listener;
-        internal StravaBackgroundService(DeviceListener deviceListener)
+        private readonly IStrava _strava;
+        private readonly ILogger<StravaBackgroundService> _logger;
+
+        public StravaBackgroundService(DeviceListener deviceListener, IStrava strava, ILogger<StravaBackgroundService> logger)
         {
+            _logger = logger;
             _listener = deviceListener;
+            _strava = strava;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
-                while (!stoppingToken.IsCancellationRequested)
+                if (!stoppingToken.IsCancellationRequested)
                 {
-                    _listener.DeviceFound += DeviceFound;
+                    _listener.DeviceFound += async (s, e) =>
+                    {
+                        _logger.LogInformation("Device found at {Path}", e.Path);
+
+                        try
+                        {
+                            var activitieIds = await _strava.UploadActivitiesAsync(e.Path);
+                            _logger.LogInformation($"All files uploaded with activity ids {string.Join(',', activitieIds)}");
+                            // TODO: Notify the user
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Unhandled exception caught");
+                            // TODO: Notify the user
+                        }
+                        
+                    };
+
+                    await Task.CompletedTask;
                 }
             }
             catch (Exception ex)
             {
-                // TODO: Log exception
+                _logger.LogError(ex, "Exception encountered when starting service");
                 Environment.Exit(1);
             }
-        }
-
-        private void DeviceFound(object? sender, DeviceFoundArgs e)
-        {
-            // TODO: Make this work
-            Console.WriteLine(e.Path);
         }
     }
 }
