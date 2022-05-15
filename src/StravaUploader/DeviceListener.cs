@@ -24,7 +24,7 @@ namespace StravaUploader
         public void DeviceAttached(object sender, EventArrivedEventArgs e)
         {
             var info = DriveInfo.GetDrives();
-
+            
             foreach (var drive in info)
             {
                 if (drive.Name.StartsWith(e.NewEvent.Properties["DriveName"].Value.ToString() ?? string.Empty) && drive.VolumeLabel == _config.Device.Name)

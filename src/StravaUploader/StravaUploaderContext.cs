@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace StravaUploader
 {
@@ -21,9 +22,18 @@ namespace StravaUploader
             _logName = logName;
             _notificationService = notificationService;
 
+            // Get the icon for the system tray
+            Icon icon;
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourcePath = assembly.GetManifestResourceNames().Single(str => str.EndsWith("app.ico"));
+            using (Stream stream = assembly.GetManifestResourceStream(resourcePath) ?? throw new("No icon found"))
+            {
+                icon = new(stream);
+            }
+
             trayIcon = new NotifyIcon()
             {
-                Icon = new Icon("app.ico"),
+                Icon = icon,
                 ContextMenuStrip = new ContextMenuStrip()
                 {
                     Items =

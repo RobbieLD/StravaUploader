@@ -6,9 +6,6 @@ namespace StravaUploader
 {
     internal static class Program
     {
-        public const string logName = "strava_uploader.log";
-        public const string configName = "appsettings.json";
-
         [STAThread]
         static void Main()
         {
@@ -23,6 +20,9 @@ namespace StravaUploader
 
         public static void ConfigureServices(ServiceCollection services)
         {
+            string logName  = Path.Combine(Directory.GetCurrentDirectory(), "strava_uploader.log");
+            string configName = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File(logName)
                 .CreateLogger();
