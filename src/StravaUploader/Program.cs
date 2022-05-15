@@ -1,47 +1,47 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Serilog;
-using StravaUploader;
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File("strava_uploader.log")
-    .CreateLogger();
-
-IConfiguration config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddJsonFile("appsettings.local.json", true)
-    .Build();
-
-using IHost host = Host.CreateDefaultBuilder(args)
-    .UseSerilog()
-    .UseWindowsService(options =>
+namespace StravaUploader
+{
+    internal static class Program
     {
-        options.ServiceName = "Strava Upload Service";
-    })
-    .ConfigureServices(services =>
-    {
-        
-        services.Configure<Config>(config);
-        services.AddScoped<IAuthListener, AuthListener>();
-        services.AddScoped<IKeyRepository, KeyRepository>();
-        services.AddScoped<IStrava, Strava>();
-        services.AddSingleton<DeviceListener>();
-        services.AddHostedService<StravaBackgroundService>();
-        services.AddHttpClient();
-    })
-    .Build();
+        public const string logName = "strava_uploader.log";
+        public const string configName = "appsettings.json";
 
-try
-{
-    await host.RunAsync();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Service faield to start");
-}
-finally
-{
-    Log.CloseAndFlush();
+        [STAThread]
+        static void Main()
+        {
+            ApplicationConfiguration.Initialize();
+
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            using ServiceProvider serviceProvider = services.BuildServiceProvider();
+            var ctx = serviceProvider.GetRequiredService<StravaUploaderContext>();
+            Application.Run(ctx);
+        }
+
+        public static void ConfigureServices(ServiceCollection services)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(logName)
+                .CreateLogger();
+
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonFile(configName)
+                // For local development
+                .AddJsonFile("appsettings.local.json", true)
+                .Build();
+
+            services.Configure<Config>(config);
+            services.AddScoped<IAuthListener, AuthListener>();
+            services.AddScoped<IKeyRepository, KeyRepository>();
+            services.AddSingleton<INotificationService, NotificationService>();
+            services.AddScoped<IStrava, Strava>();
+            services.AddSingleton<DeviceListener>();
+            services.AddScoped(a => ActivatorUtilities.CreateInstance<StravaUploaderContext>(a, logName, configName));
+            services.AddHttpClient();
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+        }
+    }
 }

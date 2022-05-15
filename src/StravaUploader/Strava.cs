@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Web;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace StravaUploader
 {
@@ -148,7 +147,7 @@ namespace StravaUploader
 
         private async Task<AuthTokenResponse> MakeTokenRequestAsync(object body)
         {
-            var request = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, Application.Json);
+            var request = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.PostAsync(authUrl, request);
 

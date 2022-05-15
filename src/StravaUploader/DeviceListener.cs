@@ -1,11 +1,9 @@
 ﻿using System.Management;
 using Microsoft.Extensions.Options;
-using System.Runtime.Versioning;
 
 namespace StravaUploader
 {
-    [SupportedOSPlatform("windows")]
-    public class DeviceListener
+    public class DeviceListener : IDisposable
     {
         public event EventHandler<DeviceFoundArgs>? DeviceFound;
 
@@ -21,7 +19,6 @@ namespace StravaUploader
             _watcher.EventArrived += new(DeviceAttached);
             _watcher.Query = query;
             _watcher.Start();
-            _watcher.WaitForNextEvent();
         }
 
         public void DeviceAttached(object sender, EventArrivedEventArgs e)
@@ -36,6 +33,12 @@ namespace StravaUploader
                     break;
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            _watcher.Stop();
+            _watcher.Dispose();
         }
     }
 }
