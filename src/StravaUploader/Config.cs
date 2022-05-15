@@ -20,5 +20,6 @@
         public string Name { get; set; } = string.Empty;
         public string Path { get; set; } = string.Empty;
         public string FileType { get; set; } = string.Empty;
+        public bool CheckOnStart { get; set; }
     }
 }

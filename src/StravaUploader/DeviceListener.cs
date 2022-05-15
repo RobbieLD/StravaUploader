@@ -21,13 +21,18 @@ namespace StravaUploader
             _watcher.Start();
         }
 
-        public void DeviceAttached(object sender, EventArrivedEventArgs e)
+        private void DeviceAttached(object sender, EventArrivedEventArgs e)
+        {
+            CheckForDevice(e.NewEvent.Properties["DriveName"].Value.ToString());
+        }
+
+        public void CheckForDevice(string? driveName = null)
         {
             var info = DriveInfo.GetDrives();
-            
+
             foreach (var drive in info)
             {
-                if (drive.Name.StartsWith(e.NewEvent.Properties["DriveName"].Value.ToString() ?? string.Empty) && drive.VolumeLabel == _config.Device.Name)
+                if ((driveName != null ? drive.Name.StartsWith(driveName) : true) && drive.VolumeLabel == _config.Device.Name)
                 {
                     DeviceFound?.Invoke(this, new DeviceFoundArgs(drive.RootDirectory.FullName));
                     break;

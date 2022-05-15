@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -8,13 +9,22 @@ namespace StravaUploader
     {
         private readonly NotifyIcon trayIcon; 
         private readonly DeviceListener _listener;
+        private readonly Config _config;
         private readonly IStrava _strava;
         private readonly INotificationService _notificationService;
         private readonly ILogger<StravaUploaderContext> _logger;
         private readonly string _logName, _configName;
 
-        public StravaUploaderContext(ILogger<StravaUploaderContext> logger, IStrava strava, DeviceListener deviceListener, INotificationService notificationService, string logName, string configName)
+        public StravaUploaderContext(
+            ILogger<StravaUploaderContext> logger,
+            IStrava strava,
+            DeviceListener deviceListener,
+            INotificationService notificationService,
+            IOptions<Config> options,
+            string logName,
+            string configName)
         {
+            _config = options.Value;
             _logger = logger;
             _listener = deviceListener;
             _strava = strava;
@@ -48,6 +58,11 @@ namespace StravaUploader
             };
 
             HookupEventListener();
+
+            if (_config.Device.CheckOnStart)
+            {
+                _listener.CheckForDevice();
+            }
         }
 
         private void HookupEventListener()
