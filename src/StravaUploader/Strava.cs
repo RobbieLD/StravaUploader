@@ -60,10 +60,11 @@ namespace StravaUploader
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            using var stream = new FileStream(fileName, FileMode.Open);
             var form = new MultipartFormDataContent
             {
                 { new StringContent(_config.Device.FileType), "data_type" },
-                { new StreamContent(new FileStream(fileName, FileMode.Open)), "file", Path.GetFileName(fileName) }
+                { new StreamContent(stream), "file", Path.GetFileName(fileName) }
             };
             
             var httpResponseMessage = await httpClient.PostAsync(uploadUrl, form);
