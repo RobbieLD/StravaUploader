@@ -34,8 +34,9 @@ namespace StravaUploader
 
             // Get the icon for the system tray
             Icon icon;
-            var assembly = Assembly.GetExecutingAssembly();
-            string resourcePath = assembly.GetManifestResourceNames().Single(str => str.EndsWith("app.ico"));
+            var assembly = Assembly.GetExecutingAssembly(); ;
+            string? version = assembly?.GetName()?.Version?.ToString();
+            string resourcePath = assembly!.GetManifestResourceNames().Single(str => str.EndsWith("app.ico"));
             using (Stream stream = assembly.GetManifestResourceStream(resourcePath) ?? throw new("No icon found"))
             {
                 icon = new(stream);
@@ -48,6 +49,8 @@ namespace StravaUploader
                 {
                     Items =
                     {
+                        new ToolStripLabel($"Strava Uploader {version}"),
+                        new ToolStripSeparator(),
                         new ToolStripMenuItem("View Log", null, OpenLog),
                         new ToolStripMenuItem("Open Config", null, OpenConfig),
                         new ToolStripMenuItem("Exit", null, Exit)
