@@ -1,6 +1,9 @@
 # Strava Uploader
 This is an app which enables automatic uploading of activities to strava with out the need to use the proprietary apps which conme with most devices.
 
+![Release](https://github.com/RobbieLD/StravaUploader/actions/workflows/publish/badge.svg)
+
+
 ## Installation
 1. Simply download te `StravaUploader.exe` from the releases page along with the `appsettings.json` file. This is the master config for the app and needs to be in the same directory as the app.
 2. Update `appsettings.json` with the values as required based on the table below in the configuration section.
