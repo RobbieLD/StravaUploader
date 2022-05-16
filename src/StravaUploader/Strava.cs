@@ -79,6 +79,7 @@ namespace StravaUploader
                 {
                     long activityId = await WaitForUploadAsync(response.Id, token);
                     _logger.LogInformation("{fileName} uploaded with activity id {activityId} and will now be deleted", fileName, activityId);
+                    stream.Close();
                     File.Delete(fileName);
                     return activityId;
                 }

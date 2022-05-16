@@ -13,6 +13,7 @@ namespace StravaUploader
         private readonly IStrava _strava;
         private readonly INotificationService _notificationService;
         private readonly ILogger<StravaUploaderContext> _logger;
+        private readonly IUpdateService _updateService;
         private readonly string _logName, _configName;
 
         public StravaUploaderContext(
@@ -21,6 +22,7 @@ namespace StravaUploader
             DeviceListener deviceListener,
             INotificationService notificationService,
             IOptions<Config> options,
+            IUpdateService updateService,
             string logName,
             string configName)
         {
@@ -31,11 +33,12 @@ namespace StravaUploader
             _configName = configName;
             _logName = logName;
             _notificationService = notificationService;
+            _updateService = updateService;
 
             // Get the icon for the system tray
             Icon icon;
             var assembly = Assembly.GetExecutingAssembly(); ;
-            string? version = assembly?.GetName()?.Version?.ToString();
+            Version version = assembly.GetName().Version ?? throw new("No assembly version found");
             string resourcePath = assembly!.GetManifestResourceNames().Single(str => str.EndsWith("app.ico"));
             using (Stream stream = assembly.GetManifestResourceStream(resourcePath) ?? throw new("No icon found"))
             {
@@ -66,6 +69,11 @@ namespace StravaUploader
             {
                 _listener.CheckForDevice();
             }
+
+            if (_config.CheckForUpdates)
+            {
+                _updateService.CheckForUpdates(version);
+            }
         }
 
         private void HookupEventListener()
@@ -78,8 +86,12 @@ namespace StravaUploader
                 {
                     var activitieIds = await _strava.UploadActivitiesAsync(e.Path);
                     string message = $"All files uploaded with activity ids {string.Join(',', activitieIds)}";
-                    _logger.LogInformation(message);
-                    _notificationService.Show(message, "http://strava.com");
+
+                    if (activitieIds.Length > 0)
+                    {
+                        _logger.LogInformation(message);
+                        _notificationService.Show(message, "http://strava.com");
+                    }
                 }
                 catch (Exception ex)
                 {

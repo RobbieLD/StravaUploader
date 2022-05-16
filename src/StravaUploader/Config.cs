@@ -4,6 +4,7 @@
     {
         public Auth Auth { get; set; } = new Auth();
         public Device Device { get; set; } = new Device();
+        public bool CheckForUpdates { get; set; }
     }
 
     public class Auth

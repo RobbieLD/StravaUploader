@@ -42,6 +42,7 @@ namespace StravaUploader
             services.AddScoped(a => ActivatorUtilities.CreateInstance<StravaUploaderContext>(a, logName, configName));
             services.AddHttpClient();
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+            services.AddScoped<IUpdateService, UpdateService>();
         }
     }
 }
