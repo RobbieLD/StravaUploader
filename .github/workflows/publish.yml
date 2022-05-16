@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Release]
 
     runs-on: windows-latest      
 
@@ -49,4 +49,3 @@ jobs:
         artifacts: "pub/StravaUploader.exe,pub/appsettings.json"
         bodyFile: "notes.md"
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{github.ref_name}}
