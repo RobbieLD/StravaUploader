@@ -36,7 +36,7 @@ jobs:
       run: dotnet test ${{ env.Test_Project_Path }} --logger "trx;LogFileName=test-results.trx"
 
     - uses: actions/upload-artifact@v2  
-        if: ${{ always() }}
-        with:
-          name: test-results
-          path: ${{ env.Test_Report_Path }}
+      if: ${{ always() }}
+      with:
+        name: test-results
+        path: ${{ env.Test_Report_Path }}
