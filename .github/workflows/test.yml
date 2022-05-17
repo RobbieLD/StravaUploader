@@ -1,11 +1,10 @@
-name: Unit Tests
+name: CI
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 
 jobs:
 
@@ -18,8 +17,8 @@ jobs:
     runs-on: windows-latest 
 
     env:
-      Solution_Name: StravaUploader.sln
       Test_Project_Path: src\StravaUploader.Tests\StravaUploader.Tests.csproj
+      Test_Report_Path: src\StravaUploader.Tests\TestResults\test-results.trx
       
     steps:
     - name: Checkout
@@ -34,4 +33,10 @@ jobs:
         include-prerelease: true
 
     - name: Execute unit tests
-      run: dotnet test ${{ env.Test_Project_Path }}
+      run: dotnet test ${{ env.Test_Project_Path }} --logger "trx;LogFileName=test-results.trx"
+
+    - uses: actions/upload-artifact@v2  
+        if: success() || failure()
+        with:
+          name: test-results
+          path: ${{ env.Test_Report_Path }}

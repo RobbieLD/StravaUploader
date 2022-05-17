@@ -7,6 +7,9 @@ This is an app which enables automatic uploading of activities to strava with ou
 ![Windows badge](https://badgen.net/badge/icon/Windows?icon=windows&label)
 [![GitHub release badge](https://badgen.net/github/release/RobbieLD/StravaUploader/stable)](https://github.com/RobbieLD/StravaUploader/releases/latest)
 
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+
+
 
 
 ## Installation
