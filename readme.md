@@ -1,9 +1,12 @@
 # Strava Uploader
 This is an app which enables automatic uploading of activities to strava with out the need to use the proprietary apps which conme with most devices.
 
+![Release Pipeline](https://github.com/RobbieLD/StravaUploader/actions/workflows/publish.yml/badge.svg)
+![CI Tests](https://github.com/RobbieLD/StravaUploader/actions/workflows/test.yml/badge.svg)
+
 ![Windows badge](https://badgen.net/badge/icon/Windows?icon=windows&label)
 [![GitHub release badge](https://badgen.net/github/release/RobbieLD/StravaUploader/stable)](https://github.com/RobbieLD/StravaUploader/releases/latest)
-![Release Pipeline](https://github.com/RobbieLD/StravaUploader/actions/workflows/publish.yml/badge.svg)
+
 
 
 ## Installation

@@ -19,7 +19,7 @@ jobs:
 
     env:
       Solution_Name: StravaUploader.sln
-      Test_Project_Path: src\StravaUploader\StravaUploaderTests.csproj
+      Test_Project_Path: src\StravaUploader.Tests\StravaUploader.Tests.csproj
       
     steps:
     - name: Checkout
@@ -34,4 +34,4 @@ jobs:
         include-prerelease: true
 
     - name: Execute unit tests
-      run: dotnet test
+      run: dotnet test ${{ env.Test_Project_Path }}
